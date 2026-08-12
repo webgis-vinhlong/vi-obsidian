@@ -91,12 +91,12 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
         let doc_link = document.createElement("a");
         doc_link.href = "https://juggl.io/Neo4j+Graph+View/Neo4j+Graph+View+Plugin";
         doc_link.target = '_blank';
-        doc_link.innerHTML = 'the documentation';
+        doc_link.innerHTML = 'tài liệu hướng dẫn';
 
         let discord_link = document.createElement("a");
         discord_link.href = "https://discord.gg/sAmSGpaPgM";
         discord_link.target = '_blank';
-        discord_link.innerHTML = 'the Discord server';
+        discord_link.innerHTML = 'máy chủ Discord';
 
         let juggl_link = document.createElement("a");
         juggl_link.href = "https://juggl.io/";
@@ -104,17 +104,17 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
         juggl_link.innerHTML = 'Juggl';
 
         let introPar = document.createElement("p");
-        introPar.innerHTML = "WARNING: Neo4j Graph View is deprecated and will not receive any more updates. " +
-            "It will be removed from the community plugins soon. It is replaced by " + juggl_link.outerHTML + ". <br> " +
-            "Check out " + doc_link.outerHTML + " for installation help and a getting started guide. <br>" +
-            "Join " + discord_link.outerHTML + " for nice discussion and additional help."
+        introPar.innerHTML = "CẢNH BÁO: Neo4j Graph View đã ngừng phát triển và sẽ không nhận thêm bản cập nhật. " +
+            "Plugin này có thể bị gỡ khỏi danh sách plugin cộng đồng. Dự án kế nhiệm là " + juggl_link.outerHTML + ". <br> " +
+            "Xem " + doc_link.outerHTML + " để biết cách cài đặt và bắt đầu sử dụng. <br>" +
+            "Tham gia " + discord_link.outerHTML + " để trao đổi và nhận thêm hỗ trợ."
 
         containerEl.appendChild(introPar);
 
         new Setting(containerEl)
-            .setName("Neo4j database password")
-            .setDesc("The password of your neo4j graph database. WARNING: This is stored in plaintext in your vault. " +
-                "Don't use sensitive passwords here!")
+            .setName("Mật khẩu cơ sở dữ liệu Neo4j")
+            .setDesc("Mật khẩu của cơ sở dữ liệu đồ thị Neo4j. CẢNH BÁO: Mật khẩu được lưu dưới dạng văn bản thuần trong vault. " +
+                "Không sử dụng mật khẩu nhạy cảm hoặc mật khẩu dùng chung với dịch vụ khác.")
             .addText(text => {
                 text.setPlaceholder("")
                     .setValue(this.plugin.settings.password)
@@ -125,15 +125,15 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         containerEl.createEl('h3');
-        containerEl.createEl('h3', {text: 'Appearance'});
+        containerEl.createEl('h3', {text: 'Giao diện'});
 
         new Setting(containerEl)
-            .setName("Color-coding")
-            .setDesc("What property to choose for coloring the nodes in the graph. Requires a server restart.")
+            .setName("Phân màu node")
+            .setDesc("Chọn thuộc tính dùng để phân màu các node trên đồ thị. Cần khởi động lại luồng Neo4j để áp dụng.")
             .addDropdown(dropdown => dropdown
-                .addOption('tags','Tags')
-                .addOption('folders','Folders')
-                .addOption('none','No color-coding')
+                .addOption('tags','Thẻ (Tags)')
+                .addOption('folders','Thư mục')
+                .addOption('none','Không phân màu')
                 .setValue(this.plugin.settings.community)
                 .onChange((value) => {
                     this.plugin.settings.community = value;
@@ -142,8 +142,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Hierarchical layout")
-            .setDesc("Use the hierarchical graph layout instead of the normal one.")
+            .setName("Bố cục phân cấp")
+            .setDesc("Sử dụng bố cục đồ thị phân cấp thay cho bố cục thông thường.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.hierarchical)
                     .onChange((new_value) => {
@@ -153,8 +153,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Show arrows")
-            .setDesc("Show arrows on edges.")
+            .setName("Hiển thị mũi tên")
+            .setDesc("Hiển thị mũi tên trên các cạnh của đồ thị.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.show_arrows)
                     .onChange((new_value) => {
@@ -163,8 +163,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
                     })
             });
         new Setting(containerEl)
-            .setName("Show context on inline links")
-            .setDesc("Shows the paragraph where an inline link is in on the edge.")
+            .setName("Hiển thị ngữ cảnh của liên kết inline")
+            .setDesc("Hiển thị đoạn văn chứa liên kết inline trên cạnh tương ứng.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.inlineContext)
                     .onChange((new_value) => {
@@ -173,7 +173,7 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
                     })
             });
         containerEl.createEl('h4');
-        containerEl.createEl('h4', {text: 'Node Styling'});
+        containerEl.createEl('h4', {text: 'Kiểu hiển thị node'});
 
         const div = document.createElement("div");
         div.className = "neovis_setting";
@@ -197,20 +197,19 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
         let temp_link = document.createElement("a");
         temp_link.href = "https://publish.obsidian.md/semantic-obsidian/Node+styling";
         temp_link.target = '_blank';
-        temp_link.innerHTML ='this link';
+        temp_link.innerHTML ='liên kết này';
 
         let par = document.createElement("p");
-        par.innerHTML = "Styling of nodes in .json format. <br>" +
-            "Use {\"defaultStyle\": {}} for the default styling of nodes. " +
-            "Use {\"image\": {}} to style images. Use {\"SMD_dangling\": {}} to style dangling notes. <br>" +
-            "When color-coding is set to Folders, use the path to the folder for this key. " +
-            "Use {\"/\" for the root folder. <br>" +
-            "See " +    temp_link.outerHTML + " for help with styling nodes. "
+        par.innerHTML = "Cấu hình kiểu hiển thị node ở định dạng JSON. <br>" +
+            "Dùng {\"defaultStyle\": {}} để đặt kiểu mặc định cho node. " +
+            "Dùng {\"image\": {}} để định dạng node hình ảnh và {\"SMD_dangling\": {}} cho ghi chú chưa tồn tại. <br>" +
+            "Khi phân màu theo Thư mục, dùng đường dẫn thư mục làm khóa; thư mục gốc dùng khóa {\"/\": {}}. <br>" +
+            "Xem " + temp_link.outerHTML + " để biết thêm về cách định dạng node."
 
         containerEl.appendChild(par);
 
         containerEl.createEl('h4');
-        containerEl.createEl('h4', {text: 'Edge Styling'});
+        containerEl.createEl('h4', {text: 'Kiểu hiển thị cạnh'});
 
         const div2 = document.createElement("div");
         div2.className = "neovis_setting2";
@@ -234,24 +233,24 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
         let temp_link2 = document.createElement("a");
         temp_link2.href = "https://publish.obsidian.md/semantic-obsidian/Edge+styling";
         temp_link2.target = '_blank';
-        temp_link2.innerHTML = 'this link';
+        temp_link2.innerHTML = 'liên kết này';
 
         let par2 = document.createElement("p");
-        par2.innerHTML = "Styling of edges is done in .json format. <br>" +
-            "The first key determines what types of links to apply this style to. " +
-            "Use {\"defaultStyle\": {}} for the default styling of edges, and {\"inline\":{} } for the styling of untyped links. " +
-            "See " + temp_link2.outerHTML + " for help with styling edges."
+        par2.innerHTML = "Cấu hình kiểu hiển thị cạnh ở định dạng JSON. <br>" +
+            "Khóa đầu tiên xác định loại liên kết được áp dụng kiểu hiển thị. " +
+            "Dùng {\"defaultStyle\": {}} cho kiểu mặc định và {\"inline\": {}} cho các liên kết không có kiểu. " +
+            "Xem " + temp_link2.outerHTML + " để biết thêm về cách định dạng cạnh."
 
         containerEl.appendChild(par2);
 
 
         containerEl.createEl('h3');
-        containerEl.createEl('h3', {text: 'Advanced'});
+        containerEl.createEl('h3', {text: 'Nâng cao'});
 
         new Setting(containerEl)
-            .setName("Automatic expand")
-            .setDesc("This will automatically expand the neighbourhood around any nodes clicked on or added to the graph. " +
-                "This normally only happens when pressing E or when double-clicking.")
+            .setName("Tự động mở rộng")
+            .setDesc("Tự động mở rộng vùng lân cận quanh node khi node được nhấp hoặc thêm vào đồ thị. " +
+                "Thông thường thao tác này chỉ xảy ra khi nhấn E hoặc nhấp đúp.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.auto_expand)
                     .onChange((new_value) => {
@@ -260,8 +259,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
                     })
             });
         new Setting(containerEl)
-            .setName("Automatically add nodes")
-            .setDesc("This will automatically add nodes to the graph whenever a note is opened.")
+            .setName("Tự động thêm node")
+            .setDesc("Tự động thêm node vào đồ thị mỗi khi một ghi chú được mở.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.auto_add_nodes)
                     .onChange((new_value) => {
@@ -271,9 +270,9 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Convert Markdown")
-            .setDesc("If true, the server will convert the content of notes to HTML. This can slow the server. " +
-                "Turn it off to increase server performance at the cost of not having proper previews on hovering in the graph. ")
+            .setName("Chuyển đổi Markdown")
+            .setDesc("Khi bật, máy chủ sẽ chuyển nội dung ghi chú sang HTML. Việc này có thể làm giảm hiệu năng. " +
+                "Tắt tùy chọn để tăng hiệu năng, đổi lại phần xem trước khi rê chuột trên đồ thị có thể không hiển thị đúng.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.convert_markdown)
                     .onChange((new_value) => {
@@ -283,9 +282,9 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Index note content")
-            .setDesc("This will full-text index the content of notes. " +
-                "This allows searching within notes using the Neo4j Bloom search bar. However, it could decrease performance.")
+            .setName("Lập chỉ mục nội dung ghi chú")
+            .setDesc("Lập chỉ mục toàn văn cho nội dung ghi chú để có thể tìm kiếm bên trong ghi chú bằng Neo4j Bloom. " +
+                "Tính năng này có thể làm giảm hiệu năng.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.index_content)
                     .onChange((new_value) => {
@@ -295,8 +294,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Typed links prefix")
-            .setDesc("Prefix to use for typed links. Default is '-'. Requires a server restart.")
+            .setName("Tiền tố của typed link")
+            .setDesc("Tiền tố dùng cho liên kết có kiểu. Mặc định là '-'. Cần khởi động lại luồng Neo4j để áp dụng.")
             .addText(text => {
                 text.setPlaceholder("")
                     .setValue(this.plugin.settings.typed_link_prefix)
@@ -307,8 +306,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Image server port")
-            .setDesc("Set the port of the image server. If you use multiple vaults, these need to be set differently. Default 3000.")
+            .setName("Cổng máy chủ hình ảnh")
+            .setDesc("Đặt cổng cho máy chủ hình ảnh. Nếu dùng nhiều vault, mỗi vault nên dùng một cổng khác nhau. Mặc định: 3000.")
             .addText(text => {
                 text.setValue(this.plugin.settings.imgServerPort + '')
                     .setPlaceholder('3000')
@@ -319,8 +318,8 @@ export class Neo4jViewSettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Debug")
-            .setDesc("Enable debug mode. Prints a lot of stuff in the developers console. Requires a server restart.")
+            .setName("Gỡ lỗi")
+            .setDesc("Bật chế độ debug. Chế độ này ghi nhiều thông tin vào Developer Console và cần khởi động lại luồng Neo4j để áp dụng.")
             .addToggle(toggle => {
                 toggle.setValue(this.plugin.settings.debug)
                     .onChange((new_value) => {
