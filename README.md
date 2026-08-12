@@ -79,16 +79,12 @@ Plugin chạy trên máy tính để bàn và cần:
 2. Cài Neo4j Desktop.
 3. Tạo database mới, đặt mật khẩu và khởi động database.
 4. Cài plugin vào vault Obsidian và bật trong **Settings → Community plugins**.
-5. Mở phần cài đặt **Neo4j Graph View**, nhập mật khẩu Neo4j.
-6. Chạy lệnh khởi động lại Neo4j stream từ Command Palette.
+5. Mở phần cài đặt **Neo4j Graph View - Tiếng Việt**, nhập mật khẩu Neo4j.
+6. Chạy lệnh **Khởi động lại luồng Neo4j** từ Command Palette.
 
 ## 🧭 Sử dụng Graph View
 
-Mở một ghi chú, nhấn `Ctrl/Cmd + P`, sau đó chạy:
-
-```text
-Neo4j Graph View: Open local graph of note
-```
+Mở một ghi chú, nhấn `Ctrl/Cmd + P`, sau đó chạy lệnh **Mở đồ thị cục bộ của ghi chú**.
 
 Các thao tác chính:
 
@@ -110,11 +106,7 @@ RETURN n, r, m
 LIMIT 50
 ```
 
-Đặt con trỏ trong code block rồi chạy:
-
-```text
-Neo4j Graph View: Execute Cypher query
-```
+Đặt con trỏ trong code block rồi chạy lệnh **Thực thi truy vấn Cypher**.
 
 Plugin sẽ mở một Graph View mới để hiển thị kết quả.
 
