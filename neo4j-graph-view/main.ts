@@ -20,7 +20,7 @@ import {IdType} from "vis-network";
 // I got this from https://github.com/SilentVoid13/Templater/blob/master/src/fuzzy_suggester.ts
 const exec_promise = promisify(exec);
 
-const STATUS_OFFLINE = "Neo4j stream offline";
+const STATUS_OFFLINE = "Luồng Neo4j đang ngoại tuyến";
 
 const DEVELOP_MODE = false;
 
@@ -33,7 +33,7 @@ export default class Neo4jViewPlugin extends Plugin {
 	imgServer: Server;
 
 	async onload() {
-		let noticeText = "WARNING: Neo4j Graph View is deprecated and replaced by the new Obsidian plugin Juggl."
+		let noticeText = "CẢNH BÁO: Neo4j Graph View đã ngừng phát triển và được thay thế bởi plugin Obsidian mới Juggl."
 		new Notice(noticeText);
 		console.log(noticeText);
 		if (this.app.vault.adapter instanceof FileSystemAdapter) {
@@ -48,7 +48,7 @@ export default class Neo4jViewPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'restart-stream',
-			name: 'Restart Neo4j stream',
+			name: 'Khởi động lại luồng Neo4j',
 			callback: () => {
 				console.log('Restarting stream');
 				this.restart();
@@ -57,7 +57,7 @@ export default class Neo4jViewPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'stop-stream',
-			name: 'Stop Neo4j stream',
+			name: 'Dừng luồng Neo4j',
 			callback: () => {
 				this.shutdown();
 			},
@@ -85,7 +85,7 @@ export default class Neo4jViewPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'open-vis',
-			name: 'Open local graph of note',
+			name: 'Mở đồ thị cục bộ của ghi chú',
 			callback: () => {
 				let active_view = this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (active_view == null) {
@@ -98,10 +98,10 @@ export default class Neo4jViewPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'execute-query',
-			name: 'Execute Cypher query',
+			name: 'Thực thi truy vấn Cypher',
 			callback: () => {
 				if (!this.stream_process) {
-					new Notice("Cannot open local graph as neo4j stream is not active.")
+					new Notice("Không thể mở đồ thị cục bộ vì luồng Neo4j chưa hoạt động.")
 					return;
 				}
 				this.executeQuery();
@@ -112,7 +112,7 @@ export default class Neo4jViewPlugin extends Plugin {
 
 		this.app.workspace.on("file-menu", ((menu, file: TFile) => {
 			menu.addItem((item) =>{
-				item.setTitle("Open Neo4j Graph View").setIcon("dot-network")
+				item.setTitle("Mở trong Neo4j Graph View").setIcon("dot-network")
 					.onClick(evt => {
 						if (file.extension === "md") {
 							this.openLocalGraph(file.basename);
@@ -148,7 +148,7 @@ export default class Neo4jViewPlugin extends Plugin {
 	}
 
 	public async restart() {
-		new Notice("Restarting Neo4j stream.");
+		new Notice("Đang khởi động lại luồng Neo4j.");
 		await this.shutdown();
 		await this.initialize();
 	}
@@ -174,7 +174,7 @@ export default class Neo4jViewPlugin extends Plugin {
 		}
 		catch (e) {
 			console.log("Error during updating semantic markdown: \n", e);
-			new Notice("Error during updating semantic markdown. Check the console for crash report.");
+			new Notice("Không thể cập nhật semantic-markdown-converter. Xem Developer Console để biết chi tiết lỗi.");
 		}
 		let options = {
 			args: ['--input', this.path,
@@ -198,20 +198,20 @@ export default class Neo4jViewPlugin extends Plugin {
 			let statusbar = this.statusBar;
 			let settings = this.settings;
 			this.stream_process.on('message', function (message) {
-				// received a message sent from the Python script (a simple "print" statement)
+				// Các chuỗi kiểm tra dưới đây là giao thức với tiến trình Python, không dịch chúng.
 				if (message === 'Stream is active!') {
 					console.log(message);
-					new Notice("Neo4j stream online!");
-					statusbar.setText("Neo4j stream online");
+					new Notice("Luồng Neo4j đã trực tuyến!");
+					statusbar.setText("Luồng Neo4j đang trực tuyến");
 				}
 				else if (message === 'invalid user credentials') {
 					console.log(message);
-					new Notice('Please provide a password in the Neo4j Graph View settings');
+					new Notice('Vui lòng nhập mật khẩu trong phần cài đặt Neo4j Graph View.');
 					statusbar.setText(STATUS_OFFLINE);
 				}
 				else if (message === 'no connection to db') {
 					console.log(message);
-					new Notice("No connection to Neo4j database. Please start Neo4j Database in Neo4j Desktop");
+					new Notice("Không thể kết nối tới cơ sở dữ liệu Neo4j. Hãy khởi động database trong Neo4j Desktop.");
 					statusbar.setText(STATUS_OFFLINE);
 				}
 				else if (/^onSMD/.test(message)) {
@@ -258,12 +258,12 @@ export default class Neo4jViewPlugin extends Plugin {
 				}
 			});
 
-			new Notice("Initializing Neo4j stream.");
-			this.statusBar.setText('Initializing Neo4j stream');
+			new Notice("Đang khởi tạo luồng Neo4j.");
+			this.statusBar.setText('Đang khởi tạo luồng Neo4j');
 		}
 		catch(error) {
 			console.log("Error during initialization of semantic markdown: \n", error);
-			new Notice("Error during initialization of the Neo4j stream. Check the console for crash report.");
+			new Notice("Không thể khởi tạo luồng Neo4j. Xem Developer Console để biết chi tiết lỗi.");
 		}
 		this.httpServer();
 	}
@@ -322,13 +322,13 @@ export default class Neo4jViewPlugin extends Plugin {
 		}
 		catch (e){
 			console.log(e);
-			new Notice("Neo4j: Couldn't start image server, see console");
+			new Notice("Neo4j: Không thể khởi động máy chủ hình ảnh. Xem Developer Console để biết chi tiết.");
 		}
 	}
 
 	openLocalGraph(name: string) {
 		if (!this.stream_process) {
-			new Notice("Cannot open local graph as neo4j stream is not active.")
+			new Notice("Không thể mở đồ thị cục bộ vì luồng Neo4j chưa hoạt động.")
 			return;
 		}
 
@@ -402,7 +402,7 @@ export default class Neo4jViewPlugin extends Plugin {
 			}
 			catch(e) {
 				if (e instanceof Neo4jError) {
-					new Notice("Invalid cypher query. Check console for more info.");
+					new Notice("Truy vấn Cypher không hợp lệ. Xem Developer Console để biết thêm thông tin.");
 				}
 				else {
 					throw e;
@@ -413,9 +413,9 @@ export default class Neo4jViewPlugin extends Plugin {
 
 	public async shutdown() {
 		if(this.stream_process) {
-			new Notice("Stopping Neo4j stream");
+			new Notice("Đang dừng luồng Neo4j");
 			this.stream_process.kill();
-			this.statusBar.setText("Neo4j stream offline");
+			this.statusBar.setText(STATUS_OFFLINE);
 			this.stream_process = null;
 			this.imgServer.close();
 			this.imgServer = null;
@@ -428,4 +428,3 @@ export default class Neo4jViewPlugin extends Plugin {
 	}
 
 }
-
