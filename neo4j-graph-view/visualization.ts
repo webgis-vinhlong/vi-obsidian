@@ -118,25 +118,25 @@ export class NeoVisView extends ItemView{
                         }
                     }
                     fileMenu.addItem((item) =>{
-                        item.setTitle("Expand selection (E)").setIcon("dot-network")
+                        item.setTitle("Mở rộng vùng chọn (E)").setIcon("dot-network")
                             .onClick(evt => {
                                 this.expandSelection();
                             });
                     });
                     fileMenu.addItem((item) =>{
-                        item.setTitle("Hide selection (H)").setIcon("dot-network")
+                        item.setTitle("Ẩn vùng chọn (H)").setIcon("dot-network")
                             .onClick(evt => {
                                 this.hideSelection();
                             });
                     });
                     fileMenu.addItem((item) =>{
-                        item.setTitle("Invert selection (I)").setIcon("dot-network")
+                        item.setTitle("Đảo vùng chọn (I)").setIcon("dot-network")
                             .onClick(evt => {
                                 this.invertSelection();
                             });
                     });
                     fileMenu.addItem((item) =>{
-                        item.setTitle("Select all (A)").setIcon("dot-network")
+                        item.setTitle("Chọn tất cả (A)").setIcon("dot-network")
                             .onClick(evt => {
                                 this.hideSelection();
                             });
@@ -501,7 +501,7 @@ export class NeoVisView extends ItemView{
     }
 
     getDisplayText(): string {
-        return "Neo4j Graph";
+        return "Đồ thị Neo4j";
     }
 
     getViewType(): string {
