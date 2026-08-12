@@ -1,111 +1,174 @@
+# 🇻🇳 vi-obsidian — Neo4j Graph View cho Obsidian
 
-<p align="left">
-    <a href="https://ko-fi.com/Emile" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" width="160"/></a>
-    <a href="https://github.com/HEmile/obsidian-neo4j-graph-view/releases">
-        <img src="https://img.shields.io/github/downloads/HEmile/obsidian-neo4j-graph-view/total.svg"
-            alt="Downloads" width="110"></a> 
-    <a href="https://github.com/HEmile/obsidian-neo4j-graph-view/releases">
-        <img src="https://img.shields.io/github/v/release/HEmile/obsidian-neo4j-graph-view"
-            alt="Github latest release" width="100"></a>
-   <a href="https://juggl.io/Neo4j+Graph+View/Neo4j+Graph+View+Plugin">
-        <img src="https://img.shields.io/badge/docs-Obsidian-blue"
-            alt="Documentation" width="100"></a>
-    <a href="https://discord.gg/sAmSGpaPgM">
-        <img src="https://img.shields.io/discord/794500624163143720?logo=discord"
-            alt="chat on Discord" width="120"></a>
-</p>
+> Bản Việt hóa và tài liệu hóa lại **Neo4j Graph View**, plugin giúp biến kho ghi chú Obsidian thành một đồ thị có thể trực quan hóa và truy vấn bằng Neo4j/Cypher.
 
-ANNOUNCEMENT: This plugin has been rewritten with new name Juggl. It no longer requires Neo4j and Python, and has a lot more features than Neo4j graph view.
-You can install this new plugin from the Obsidian community plugins settings!
-Note that the Neo4j Graph View plugin will be removed from the community plugins soon.
+![Neo4j Graph View](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/styled_screenshot.png)
 
-## Neo4j Graph View
-![](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/styled_screenshot.png)
+> [!IMPORTANT]
+> Dự án gốc **Neo4j Graph View đã ngừng phát triển** và được tác giả thay thế bằng Juggl. Kho mã nguồn này phù hợp cho nghiên cứu, học tập, bảo trì hệ thống cũ và phát triển bản fork/Việt hóa.
 
-Documentation at https://juggl.io/Neo4j+Graph+View/Neo4j+Graph+View+Plugin. 
+## 📌 Tổng quan
 
-Join the new Discord server to discuss the plugin: https://discord.gg/sAmSGpaPgM
+`vi-obsidian` kết nối Obsidian với Neo4j để biểu diễn ghi chú dưới dạng **node** và liên kết giữa ghi chú dưới dạng **edge**. So với Graph View mặc định, kiến trúc này cho phép mô hình hóa dữ liệu có ngữ nghĩa rõ hơn và truy vấn bằng ngôn ngữ Cypher.
 
-Adds a new and much more functional graph view to Obsidian. It does so by connecting
-to a [Neo4j](https://neo4j.com/) database. Features:
-- Selectively style nodes and edges by tags, folders and link types
-- Selective expansion and hiding of nodes
-- View images within the graph
-- [Cypher](https://neo4j.com/developer/cypher/) querying
-- Typed links using `- linkType [[note 1]], [[note 2|alias]]`
-- Hierarchical layout
+Các khả năng chính:
 
-Next up:
-- [x] Remove the need to install Neo4j and Python 
-- [ ] Different and more stable front end
-- [x] Standardize style sheet using CSS instead of JSON
+- 🕸️ trực quan hóa mạng lưới ghi chú bằng Neo4j/Neovis;
+- 🎨 tùy biến node và edge theo tag, thư mục và loại liên kết;
+- 🔎 chạy truy vấn Cypher từ Obsidian;
+- 🔗 hỗ trợ liên kết có kiểu (typed links);
+- 🌳 bố cục phân cấp;
+- 🖼️ hiển thị hình ảnh trên đồ thị;
+- 🔄 đồng bộ thay đổi từ Markdown sang Neo4j;
+- 🧭 mở, mở rộng, ẩn và chọn node trực tiếp trên Graph View.
 
-A [Roadmap](https://juggl.io/Roadmap) with planned features is also available.
+## 🧠 Kiến trúc
 
-![](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/obsidian%20neo4j%20plugin.gif)
+Dự án gồm hai phần chính.
 
-### Installation
-Detailed installation instructions is at https://juggl.io/Neo4j+Graph+View/Installation+of+Neo4j+Graph+View+Plugin
-1. Make sure you have [Python 3.6+](https://www.python.org/downloads/) installed. It needs the system-installed Python. Make sure to add Python to PATH!
-2. Make sure you have [Neo4j desktop](https://neo4j.com/download/) installed
-4. Create a new database in Neo4j desktop and start it. Record the password you use!
-5. In the settings of the plugin, enter the password. Then run the restart command.
+### 1. Plugin Obsidian bằng TypeScript
 
-If installing Python seems daunting, you can wait a couple of weeks. The goal is to port that code to Javascript.
+Thư mục `neo4j-graph-view/` chứa mã giao diện và tương tác với Obsidian:
 
-### Use
-Detailed getting started guide is at https://juggl.io/Neo4j+Graph+View/Using+the+Neo4j+Graph+View
+```text
+neo4j-graph-view/
+├── main.ts            # vòng đời plugin, command, tiến trình Python
+├── settings.ts        # cấu hình plugin
+├── visualization.ts   # hiển thị và tương tác đồ thị
+├── styles.css         # CSS
+├── package.json       # dependency và script build
+└── rollup.config.js   # cấu hình bundler
+```
 
-On an open note, use the command "Neo4j Graph View: Open local graph of note". You can run commands using ctrl/cmd+p. Alternatively, you can bind this command to a hotkey in the settings.
+Lớp này sử dụng `neovis.js`/`vis-network` để hiển thị đồ thị và gọi tiến trình Python để đồng bộ dữ liệu.
 
-The settings contains several options, such as coloring based on folders and a hierarchical layout. 
+### 2. Semantic Markdown Converter bằng Python
 
-#### Cypher Querying
-Create code blocks with language `cypher`. In this code block, create your Cypher query. Then, when the cursor is on this
-code block, use the Obsidian command 'Neo4j Graph View: Execute Cypher query'. Example: 
+Thư mục `smdc/` đọc các tệp Markdown trong vault, phân tích metadata và chuyển chúng thành dữ liệu Neo4j.
 
-![](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/cypher_querying.png)
+Quy tắc ánh xạ tổng quát:
 
+| Markdown / Obsidian | Neo4j |
+|---|---|
+| tên ghi chú | thuộc tính `name` |
+| nội dung ghi chú | thuộc tính `content` |
+| YAML frontmatter | thuộc tính của node |
+| tag | nhãn/kiểu thực thể |
+| wikilink | quan hệ `inline` |
+| typed link | quan hệ có kiểu tương ứng |
+| liên kết tới ghi chú chưa tồn tại | dangling node |
 
-### Possible problems
-All changes made in obsidian should be automatically reflected in Neo4j, but this is still very buggy. 
+Nhờ đó, một vault Obsidian có thể được sử dụng như một **knowledge graph** cá nhân.
 
-If you are running into issues, see https://juggl.io/Neo4j+Graph+View/Installation+of+Neo4j+Graph+View+Plugin#troubleshooting
-### Semantics
-The plugin collects all notes with extension .md in the input directory (default: `markdown/`). Each note is interpreted as follows:
-- Interprets tags as entity types
-- Interprets YAML frontmatter as entity properties
-- Interprets wikilinks as links with type `inline`, and adds content
-- Lines of the format `"- linkType [[note 1]], [[note 2|alias]]"` creates links with type `linkType` from the current note to `note 1` and `note 2`.
-- The name of the note is stored in the property `name`
-- The content of the note (everything except YAML frontmatter and typed links) is stored in the property `content`
-- Links to notes that do not exist yet are created without any types.
+## ⚙️ Yêu cầu
 
+Plugin chạy trên máy tính để bàn và cần:
 
-## Other visualization and querying options
-Another use case for this plugin is to use your Obsidian vault in one of the many apps in the Neo4j desktop
-Graph Apps Store. Using with this plugin active will automatically connect it to your vault. Here are some suggestions:
-### Neo4j Bloom
-[Neo4j bloom](https://neo4j.com/product/bloom/) is very powerful graph visualization software. Compared to the embedded
-graph view in Obsidian, it offers much more freedom in customization.
+1. Obsidian Desktop;
+2. Python 3.6+ có trong `PATH`;
+3. Neo4j Desktop;
+4. một database Neo4j đang chạy;
+5. mật khẩu Neo4j.
 
-![](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/bloom_screenshot.jpg)
+> [!WARNING]
+> Phiên bản plugin này lưu mật khẩu Neo4j trong dữ liệu cấu hình của vault dưới dạng plaintext. Không dùng mật khẩu quan trọng hoặc mật khẩu dùng chung với dịch vụ khác.
 
-  
-### GraphXR
-[GraphXR](https://www.kineviz.com/) is a 3D graph view, which looks quite gorgeous!
+## 🚀 Cài đặt
 
-![](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/graphxr.gif)
+1. Cài Python 3.6 trở lên và kiểm tra `python3`/`pip3` hoạt động.
+2. Cài Neo4j Desktop.
+3. Tạo database mới, đặt mật khẩu và khởi động database.
+4. Cài plugin vào vault Obsidian và bật trong **Settings → Community plugins**.
+5. Mở phần cài đặt **Neo4j Graph View - Tiếng Việt**, nhập mật khẩu Neo4j.
+6. Chạy lệnh **Khởi động lại luồng Neo4j** từ Command Palette.
 
+## 🧭 Sử dụng Graph View
 
-### Neo4j Browser
-A query browser that uses the Cypher language to query your vault. Can be used for advanced queries or data anlysis of
-your vault. 
+Mở một ghi chú, nhấn `Ctrl/Cmd + P`, sau đó chạy lệnh **Mở đồ thị cục bộ của ghi chú**.
 
-![](https://raw.githubusercontent.com/HEmile/obsidian-neo4j-graph-view/main/neo4j-graph-view/resources/browser_screenshot.png)
+Các thao tác chính:
 
+- **nhấp node**: mở ghi chú;
+- **nhấp đúp node**: mở rộng node lân cận;
+- **Shift + kéo chuột**: chọn nhiều node;
+- **E**: mở rộng vùng chọn;
+- **H** hoặc **Backspace**: ẩn vùng chọn;
+- **I**: đảo vùng chọn;
+- **A**: chọn tất cả.
 
-## Python code: Semantic Markdown to Neo4j
-This Obsidian plugin uses the Python package `semantic-markdown-converter`, which is also in this repo. 
-It creates an active data stream from a folder of Markdown notes to a Neo4j database. 
-For documentation, see https://juggl.io/Neo4j+Graph+View/Semantic+Markdown+Converter
+## 🔎 Truy vấn Cypher
+
+Tạo code block `cypher` trong ghi chú:
+
+```cypher
+MATCH (n)-[r]-(m)
+RETURN n, r, m
+LIMIT 50
+```
+
+Đặt con trỏ trong code block rồi chạy lệnh **Thực thi truy vấn Cypher**.
+
+Plugin sẽ mở một Graph View mới để hiển thị kết quả.
+
+## 🔗 Typed Links — liên kết có kiểu
+
+Ngoài wikilink thông thường, plugin hỗ trợ cú pháp:
+
+```markdown
+- supports [[Dự án A]], [[Dự án B|Bí danh]]
+- depends_on [[Dịch vụ dữ liệu]]
+```
+
+`supports` và `depends_on` trở thành kiểu quan hệ trong Neo4j. Cách biểu diễn này hữu ích khi cần mô tả ngữ nghĩa giữa các ghi chú, thay vì chỉ ghi nhận rằng hai ghi chú có liên kết.
+
+## 🎨 Tùy biến node và edge
+
+Kiểu hiển thị được cấu hình bằng JSON trong Settings. Ví dụ:
+
+```json
+{
+  "defaultStyle": {
+    "size": 9,
+    "borderWidth": 0
+  },
+  "image": {
+    "size": 40
+  }
+}
+```
+
+Có thể khai báo style riêng theo tag, thư mục và loại quan hệ.
+
+## 🧪 Công cụ Neo4j bổ trợ
+
+Dữ liệu do plugin tạo có thể tiếp tục được khám phá bằng:
+
+- **Neo4j Bloom** — khám phá dữ liệu đồ thị trực quan;
+- **Neo4j Browser** — chạy truy vấn Cypher nâng cao;
+- **GraphXR** — trực quan hóa đồ thị 3D.
+
+## 🛠️ Phát triển
+
+Cài dependency và build plugin:
+
+```bash
+cd neo4j-graph-view
+npm install
+npm run build
+```
+
+Phần Python nằm trong `smdc/` và được đóng gói từ `setup.py`.
+
+## ⚠️ Trạng thái và tương thích
+
+Mã nguồn này thuộc thế hệ plugin cũ. Một số API Obsidian, dependency TypeScript/Python hoặc cách Neo4j hoạt động có thể đã thay đổi so với thời điểm dự án gốc được phát triển. Khi triển khai thực tế, nên kiểm thử trên một vault sao lưu trước.
+
+## 🙏 Ghi nhận nguồn
+
+Dự án kế thừa mã nguồn của **Emile van Krieken (HEmile)** và dự án **Neo4j Graph View / semantic-markdown-converter**. Dự án kế nhiệm chính thức của tác giả gốc là **Juggl**.
+
+Bản Việt hóa giữ nguyên các thuật ngữ kỹ thuật quan trọng như `Neo4j`, `Cypher`, `Obsidian`, `vault`, `node`, `edge`, `JSON` và tên khóa cấu hình để thuận tiện đối chiếu tài liệu kỹ thuật.
+
+## 📄 Giấy phép
+
+Xem tệp [`LICENSE`](LICENSE) để biết điều khoản cấp phép của kho mã nguồn.

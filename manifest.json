@@ -1,9 +1,9 @@
 {
 	"id": "neo4j-graph-view",
-	"name": "Neo4j Graph View",
+	"name": "Neo4j Graph View - Tiếng Việt",
 	"version": "0.2.6",
 	"minAppVersion": "0.9.16",
-	"description": "An Obsidian plugin for advanced graph visualization and querying using Neo4j.",
+	"description": "Plugin Obsidian trực quan hóa và truy vấn đồ thị nâng cao bằng Neo4j.",
 	"author": "Emile",
 	"authorUrl": "https://twitter.com/emilevankrieken",
 	"isDesktopOnly": true
