@@ -1,45 +1,60 @@
-## Neo4j Graph View
-![](resources/obsidian%20neo4j%20plugin.gif)
+## 🇻🇳 Neo4j Graph View
 
-Adds a new and much more functional graph view to Obsidian. It does so by connecting
-to a [Neo4j](https://neo4j.com/) database. Features: 
-- Color nodes by tags
-- Selective expansion and hiding of nodes
-- Typed links using `- linkType [[note 1]], [[note 2|alias]]` 
-- Hierarchical layout
- 
-### Installation
-1. Make sure you have python 3.6+ installed
-2. Make sure you have [Neo4j desktop](https://neo4j.com/download/) installed
-4. Create a new database in Neo4j desktop and start it. Record the password you use!
-5. In the settings of the plugin, enter the password. Then run the restart command.
+![Neo4j Graph View](resources/obsidian%20neo4j%20plugin.gif)
 
-### Use
-On an open node, use the command "Neo4j Graph View: Open local graph of note". 
-- Click on a node to open it in the Markdown view
-- Double-click on a node to expand its neighbors
-- Shift-drag in the graph view to select nodes
-  - Use E to expand the neighbors of all selected nodes
-  - Use H or Backspace to hide all selected nodes from the view
-  - Use I (invert) to select all nodes that are not currently selected
-  - Use A to select all nodes
-- All notes visited are added to the graph
+Neo4j Graph View bổ sung một chế độ xem đồ thị nâng cao cho Obsidian bằng cách kết nối vault với cơ sở dữ liệu [Neo4j](https://neo4j.com/).
 
+### ✨ Tính năng
 
-### Possible problems
-All changes made in obsidian should be automatically reflected in Neo4j, but this is still very buggy. There also seem
-to be problems with duplicate nodes in the graph.  
+- Tô màu node theo tag hoặc nhóm dữ liệu.
+- Mở rộng và ẩn node có chọn lọc.
+- Hỗ trợ liên kết có kiểu với cú pháp `- linkType [[ghi chú 1]], [[ghi chú 2|bí danh]]`.
+- Hỗ trợ bố cục phân cấp.
+- Đồng bộ dữ liệu Markdown sang Neo4j.
+- Mở ghi chú trực tiếp từ node trên đồ thị.
 
-### Semantics
-This collects all notes with extension .md in the input directory (default: `markdown/`). Each note is interpreted as follows:
-- Interprets tags as entity types
-- Interprets YAML frontmatter as entity properties
-- Interprets wikilinks as links with type `inline`, and adds content
-- Lines of the format `"- linkType [[note 1]], [[note 2|alias]]"` creates links with type `linkType` from the current note to `note 1` and `note 2`.
-- The name of the note is stored in the property `name`
-- The content of the note (everything except YAML frontmatter and typed links) is stored in the property `content`
-- Links to notes that do not exist yet are created without any types.
+### ⚙️ Cài đặt
 
-This uses a very simple syntax for typed links. There is no agreed-upon Markdown syntax for this as of yet. 
-If you are interested in using a different syntax than the list format `"- linkType [[note 1]], [[note 2|alias]]"`, 
-please  submit an issue.
+1. Cài Python 3.6 trở lên và đảm bảo Python có trong `PATH`.
+2. Cài [Neo4j Desktop](https://neo4j.com/download/).
+3. Tạo một database mới trong Neo4j Desktop và khởi động database.
+4. Ghi nhớ mật khẩu của database.
+5. Trong phần cài đặt plugin, nhập mật khẩu Neo4j rồi chạy lệnh khởi động lại Neo4j stream.
+
+> [!WARNING]
+> Plugin lưu mật khẩu Neo4j trong cấu hình vault dưới dạng plaintext. Không sử dụng mật khẩu quan trọng hoặc mật khẩu dùng chung với dịch vụ khác.
+
+### 🧭 Sử dụng
+
+Khi đang mở một ghi chú, chạy lệnh:
+
+`Neo4j Graph View: Open local graph of note`
+
+Các thao tác chính:
+
+- Nhấp một node để mở ghi chú tương ứng.
+- Nhấp đúp node để mở rộng các node lân cận.
+- Shift + kéo chuột để chọn nhiều node.
+  - `E`: mở rộng vùng lân cận của các node đã chọn.
+  - `H` hoặc `Backspace`: ẩn các node đã chọn.
+  - `I`: đảo vùng chọn.
+  - `A`: chọn tất cả node.
+- Các ghi chú được mở có thể được tự động thêm vào đồ thị tùy theo cấu hình.
+
+### 🔗 Ngữ nghĩa dữ liệu
+
+Plugin đọc các tệp `.md` trong vault và diễn giải chúng theo các quy tắc chính:
+
+- tag → kiểu/nhãn thực thể;
+- YAML frontmatter → thuộc tính thực thể;
+- wikilink → quan hệ `inline`;
+- dòng dạng `- linkType [[ghi chú 1]], [[ghi chú 2|bí danh]]` → quan hệ có kiểu `linkType`;
+- tên ghi chú → thuộc tính `name`;
+- nội dung ghi chú → thuộc tính `content`;
+- liên kết đến ghi chú chưa tồn tại → node tạm (dangling node).
+
+Cú pháp typed link của dự án là một quy ước riêng để bổ sung ngữ nghĩa cho quan hệ giữa các ghi chú.
+
+### ⚠️ Trạng thái dự án
+
+Neo4j Graph View là dự án cũ và đã được tác giả gốc thay thế bằng Juggl. Bản này phù hợp cho nghiên cứu, học tập, bảo trì và phát triển fork; nên kiểm thử kỹ trước khi sử dụng với vault quan trọng.
