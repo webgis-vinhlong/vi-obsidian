@@ -19,16 +19,14 @@ Neo4j Graph View bổ sung một chế độ xem đồ thị nâng cao cho Obsid
 2. Cài [Neo4j Desktop](https://neo4j.com/download/).
 3. Tạo một database mới trong Neo4j Desktop và khởi động database.
 4. Ghi nhớ mật khẩu của database.
-5. Trong phần cài đặt plugin, nhập mật khẩu Neo4j rồi chạy lệnh khởi động lại Neo4j stream.
+5. Trong phần cài đặt plugin, nhập mật khẩu Neo4j rồi chạy lệnh **Khởi động lại luồng Neo4j**.
 
 > [!WARNING]
 > Plugin lưu mật khẩu Neo4j trong cấu hình vault dưới dạng plaintext. Không sử dụng mật khẩu quan trọng hoặc mật khẩu dùng chung với dịch vụ khác.
 
 ### 🧭 Sử dụng
 
-Khi đang mở một ghi chú, chạy lệnh:
-
-`Neo4j Graph View: Open local graph of note`
+Khi đang mở một ghi chú, mở Command Palette (`Ctrl/Cmd + P`) và chạy lệnh **Mở đồ thị cục bộ của ghi chú**.
 
 Các thao tác chính:
 
